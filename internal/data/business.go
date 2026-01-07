@@ -37,3 +37,21 @@ func (r *businessRepo) Reply(ctx context.Context, param *biz.ReplyParam) (int64,
 	}
 	return ret.GetReplyId(), nil
 }
+
+// Appeal 申诉评论
+func (r *businessRepo) Appeal(ctx context.Context, param *biz.AppealReviewParam) (int64, error) {
+	r.log.WithContext(ctx).Infof("[data] Appeal, param:%v", param)
+	ret, err := r.data.rc.AppealReview(ctx, &v1.AppealReviewRequest{
+		ReviewId:  param.ReviewID,
+		StoreId:   param.StoreID,
+		Reason:    param.Reason,
+		Content:   param.Content,
+		PicInfo:   param.PicInfo,
+		VideoInfo: param.VideoInfo,
+	})
+	r.log.WithContext(ctx).Debugf("AppealReview return, ret:%v, err:%v", ret, err)
+	if err != nil {
+		return 0, err
+	}
+	return ret.GetAppealId(), nil
+}
